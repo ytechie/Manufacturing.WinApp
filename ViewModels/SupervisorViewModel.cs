@@ -8,6 +8,7 @@ using Manufacturing.WinApp.Views.Supervisor;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Manufacturing.WinApp.ViewModels
 {
@@ -20,6 +21,8 @@ namespace Manufacturing.WinApp.ViewModels
         {
             Mapper.CreateMap<DatasourceRecord, DataRecord>();
             Mapper.Map(datasourceRecord, this);
+            // TODO - needs some mapping to readable value based on 
+            // given value and datatype
         }
     }
 
@@ -43,8 +46,7 @@ namespace Manufacturing.WinApp.ViewModels
 
         private CoreDispatcher _dispatcher;
 
-        public ObservableCollection<DatasourceConfiguration> Datasources { get; set; }
-        public ObservableCollection<DataRecord> DataRecords { get; set; }
+        public ObservableCollection<Datasource> Datasources { get; set; }
         public ObservableCollection<DataRecord> SelectedDataRecords { get; set; }
 
         public SupervisorViewModel()
@@ -63,22 +65,16 @@ namespace Manufacturing.WinApp.ViewModels
                 throw;
             }
             
-
-            Datasources = new ObservableCollection<DatasourceConfiguration>();
-            DataRecords = new ObservableCollection<DataRecord>();
+            Datasources = new ObservableCollection<Datasource>();
+            SelectedDataRecords = new ObservableCollection<DataRecord>();
         }
 
         public void Load()
         {
-            //Subscriptions = new ObservableCollection<string>();
-            //Subscriptions.Add("Item1");
-            //Subscriptions.Add("Item2");
-            //Subscriptions.Add("Item3");
-
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
 
             SelectedDataRecords = new ObservableCollection<DataRecord>();
-            LoadDataRecords();
+            LoadDatasources();
 
             // Move this into subscription code, you'll need to track these manually for now
             //var subscriber = new DatasourceRecordReceiver("GIVE ME AUTH TOKEN!", "ENDPOINT URL; these come from Cloud.json, not sure how that's being injected", "HUB ID", "notify",
@@ -115,13 +111,13 @@ namespace Manufacturing.WinApp.ViewModels
 
         public virtual void PerformDataRecordSelectedCommand(object state)
         {
-            var dr = (DataRecord)state;
+            var dr = (Datasource)state;
             if (dr != null)
             {
                 if (dr.IsSelected)
-                    SelectedDataRecords.Add(dr);
-                else if (SelectedDataRecords.Any(x => x.Id == dr.Id))
-                    SelectedDataRecords.Remove(SelectedDataRecords.SingleOrDefault(x => x.Id == dr.Id));
+                    LoadDataRecord(dr.Id);
+                else if (SelectedDataRecords.Any(x => x.DatasourceId == dr.Id))
+                    SelectedDataRecords.Remove(SelectedDataRecords.SingleOrDefault(x => x.DatasourceId == dr.Id));
             }
         }
 
@@ -138,16 +134,16 @@ namespace Manufacturing.WinApp.ViewModels
             });
         }
 
-        async void LoadDataRecords()
+        private async void LoadDataRecord(int dataSourceId)
         {
-            var records = await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=1");
-
+            // TODO : Api call will return 1000 records now 
+            // Replace with SignalR calls - need to display only most recent
+            var records = await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=" + dataSourceId);
             _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                foreach (var record in records)
-                {
-                    DataRecords.Add(new DataRecord(record));
-                }
+                DatasourceRecord rec = records.FirstOrDefault();
+                if (rec != null)
+                    SelectedDataRecords.Add(new DataRecord(rec));
             });
         }
     }
