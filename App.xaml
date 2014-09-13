@@ -9,10 +9,15 @@
                 <ResourceDictionary Source="Common/CustomStyles.xaml"/>
                 <ResourceDictionary Source="Assets/ListBoxStyle.xaml"/>
                 <ResourceDictionary Source="Assets/TextBlockStyle.xaml"/>
+        
                 
             </ResourceDictionary.MergedDictionaries>
 
+            <x:String x:Key="AppName">Manufacturing WinApp</x:String>
+            
         </ResourceDictionary>
+       
+        
     </Application.Resources>
     
 </Application>

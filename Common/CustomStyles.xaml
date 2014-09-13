@@ -21,5 +21,29 @@
         <Setter Property="Typography.DiscretionaryLigatures" Value="True"/>
         <Setter Property="Typography.CaseSensitiveForms" Value="True"/>
     </Style>
-    
+
+    <Style TargetType="Button" x:Key="GenericButtonStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="grid" Background="#00b4ff">
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Foreground="White" FontWeight="Bold" FontSize="30" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="TextBlockLabelStyle">
+        <Setter Property="FontWeight" Value="Thin" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="TextBlockValueStyle">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="48" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+    </Style>
+
 </ResourceDictionary>

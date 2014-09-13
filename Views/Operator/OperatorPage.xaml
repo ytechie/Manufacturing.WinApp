@@ -10,33 +10,11 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
         <viewModels:OperatorViewModel x:Key="ViewModel" />
-        <x:String x:Key="AppName">My Application</x:String>
-        <Style TargetType="Button" x:Key="StartStopButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="grid">
-                            <Grid Width="300" Height="300" Background="DarkSlateGray">
-                                <TextBlock
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                                    Foreground="White" FontWeight="Bold" FontSize="30" />
-                            </Grid>
-                            <ContentPresenter />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        
+        <x:String x:Key="AppName">Operator Page</x:String>
+        
+       
     </Page.Resources>
 
     <!--
@@ -68,12 +46,12 @@
                     AutomationProperties.Name="Back"
                     AutomationProperties.AutomationId="BackButton"
                     AutomationProperties.ItemType="Navigation Button" />
-            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}"
-                       Grid.Column="1"
-                       IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40" />
+            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
@@ -81,37 +59,32 @@
                 <ColumnDefinition Width="700" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border Width="300" Grid.Row="0" Grid.Column="0" BorderThickness="3" BorderBrush="White" Margin="30 0 0 20"
-                    HorizontalAlignment="Left" VerticalAlignment="Top">
-                <StackPanel Margin="20 0 0 0">
-                    <TextBlock Text="Machine #" FontSize="30" FontWeight="Bold" Margin="0 20 20 0" />
-                    <TextBlock Text="Operator Name" FontSize="30" FontWeight="Bold" Margin="0 0 20 20" />
-                </StackPanel>
-            </Border>
-            <StackPanel Grid.Row="0" Grid.Column="1">
-                <Border Width="300" BorderThickness="3" BorderBrush="White" Margin="0 0 0 20"
-                        HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="Units Per Second" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               FontSize="30" FontWeight="Bold" Margin="0 30 0 30" />
-                </Border>
-                <Border Width="300" BorderThickness="3" BorderBrush="White" HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                    <TextBlock Text="Production Units" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               FontSize="30" FontWeight="Bold" Margin="0 30 0 30" />
-                </Border>
+            
+            <StackPanel Margin="30, 0, 0, 0">
+			    <TextBlock Text="Machine #" Style="{StaticResource TextBlockLabelStyle}" />
+                <TextBlock Text="{Binding MachineNumber, FallbackValue=2323-234}" Style="{StaticResource TextBlockValueStyle}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
-                <Button Style="{StaticResource StartStopButtonStyle}" Content="Start" Click="Start" VerticalAlignment="Top"
-                        HorizontalAlignment="Center" Margin="30 0 30 0" />
-                <Button Style="{StaticResource StartStopButtonStyle}" Content="Stop" Click="Stop" VerticalAlignment="Top"
-                        HorizontalAlignment="Center" />
+            <StackPanel Grid.Row="1" Margin="30, 0, 0, 0">
+                <TextBlock Text="Operator Name" Style="{StaticResource TextBlockLabelStyle}" />
+                <TextBlock Text="{Binding OperatorName, FallbackValue=John Young}" Style="{StaticResource TextBlockValueStyle}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Units Per Second" Style="{StaticResource TextBlockLabelStyle}" />
+                <TextBlock Text="{Binding UnitsPerSecond, FallbackValue=45.6}" Style="{StaticResource TextBlockValueStyle}" />
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1">
-                <Border Width="300" BorderThickness="3" BorderBrush="White" HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                    <TextBlock Text="Machine Status" FontSize="30" FontWeight="Bold" Margin="30 30 0 30" />
-                </Border>
+                <TextBlock Text="Production Units" Style="{StaticResource TextBlockLabelStyle}" />
+                <TextBlock Text="{Binding ProductionUnits, FallbackValue=583}" Style="{StaticResource TextBlockValueStyle}" />
             </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1">
+                <TextBlock Text="Machine Status" Style="{StaticResource TextBlockLabelStyle}" />
+                <TextBlock Text="{Binding MachineStatus, FallbackValue=Active}" Style="{StaticResource TextBlockValueStyle}" />
+            </StackPanel>
+
+            <Button Grid.Row="3" Grid.Column="0" Style="{StaticResource GenericButtonStyle}" Content="Stop" Click="Stop" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30 0 0 30" Width="150" Height="100" />
+			
+			<Button Grid.Row="3" Grid.Column="1" Style="{StaticResource GenericButtonStyle}" Content="Start" Click="Start" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 0 30 30" Width="150" Height="100" />
+ 
         </Grid>
     </Grid>
 </Page>

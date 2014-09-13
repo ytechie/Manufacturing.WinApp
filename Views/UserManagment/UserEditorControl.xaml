@@ -56,13 +56,8 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Person Editor" FontWeight="Bold" FontSize="18" FontFamily="Segoe UI"
-                        Grid.ColumnSpan="2" Margin="8"/>
-                    <TextBlock TextWrapping="Wrap" Text="Please edit the properties of this person..."
-                        Grid.Row="1" FontSize="14" Grid.ColumnSpan="2" Margin="8"/>
-                    <StackPanel Orientation="Vertical"
-                        Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="8"
-                        Margin="8,16,8,16">
+                    <TextBlock Text="Person Editor" FontWeight="Bold" FontSize="32" FontFamily="Segoe UI" Grid.ColumnSpan="2" Margin="8"/>
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="8" Margin="8,16,8,16">
                         <TextBlock Text="Name" Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
                         <TextBox Text="{Binding EditedUser.Name, Mode=TwoWay}" FontSize="16" Margin="4" />
                         <TextBlock Text="User Name" Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" Visibility="{Binding Adding, Converter={StaticResource BoolToVisibilityConverter}}" />
@@ -80,8 +75,8 @@
                     </StackPanel>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                    <Button Content="accept" Margin="8" Click="AcceptClick"></Button>
-                    <Button Content="cancel" Click="CancelClick" Margin="8"></Button>
+                    <Button Content="cancel" Click="CancelClick" Margin="8" Width="150" Height="75" Style="{StaticResource GenericButtonStyle}" />
+                    <Button Content="accept" Margin="32" Click="AcceptClick" Width="150" Height="75" Style="{StaticResource GenericButtonStyle}" />
                 </StackPanel>
             </Grid>
         </Grid>
