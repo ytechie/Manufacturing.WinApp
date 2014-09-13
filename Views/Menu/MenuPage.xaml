@@ -11,46 +11,29 @@
 
     <!--comment to force commit-->
     <Page.Resources>
-        <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
         <viewModels:MenuViewModel x:Key="ViewModel" />
+        
         <x:String x:Key="AppName">Manufacturing Menu</x:String>
 
         <Style TargetType="Button" x:Key="MenuSelectionButtonStyle">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid x:Name="grid" Width="300" Height="300" Background="DarkSlateGray">
-                           
-                                <TextBlock
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                                    Foreground="White" FontWeight="Bold" FontSize="30" />
-                           
-                            <ContentPresenter />
+                        <Grid x:Name="grid" Background="#00b4ff">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWholeWords" TextAlignment="Center" Foreground="White" FontWeight="SemiBold" FontSize="36" FontFamily="Segoe UI" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
     </Page.Resources>
-    
-    
 
     <!--
         This grid acts as a root panel for the page that defines two rows:
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-
-    <Grid x:Name="RootLayout" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-          DataContext="{Binding Source={StaticResource ViewModel}}">
+    <Grid x:Name="RootLayout" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{Binding Source={StaticResource ViewModel}}">
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition />
@@ -61,30 +44,19 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Back button and page title -->
+        <!-- page title -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Margin="39,59,39,0"
-                    Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}"
-                    Style="{StaticResource NavigationBackButtonNormalStyle}"
-                    VerticalAlignment="Top"
-                    AutomationProperties.Name="Back"
-                    AutomationProperties.AutomationId="BackButton"
-                    AutomationProperties.ItemType="Navigation Button" />
-            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}"
-                       Grid.Column="1"
-                       IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40" />
+            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40" />
         </Grid>
-        <GridView Grid.Row="1" ItemsSource="{Binding MenuScreens}" Height="350"
-                  VerticalAlignment="Top" SelectionMode="None">
+        
+        <GridView Grid.Row="1" ItemsSource="{Binding MenuScreens}" Height="350" VerticalAlignment="Top" SelectionMode="None">
             <GridView.ItemTemplate>
                 <DataTemplate>
-                    <Button Style="{StaticResource MenuSelectionButtonStyle}" Content="{Binding DisplayName}"
-                            VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30 0 30 0" Tag="{Binding ModelType}"
-                            Tapped="MenuItem_OnTapped" Visibility="{Binding Visibility}" />
+                    <Button Style="{StaticResource MenuSelectionButtonStyle}" Content="{Binding DisplayName}" VerticalAlignment="Top" HorizontalAlignment="Center" Height="300" Width="300" Margin="30 0 30 0" Padding="0" Tag="{Binding ModelType}" Tapped="MenuItem_OnTapped" Visibility="{Binding Visibility}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
             <GridView.ItemsPanel>

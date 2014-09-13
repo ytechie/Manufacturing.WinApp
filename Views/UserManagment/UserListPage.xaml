@@ -12,30 +12,6 @@
     <Page.Resources>
         <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
         <x:String x:Key="AppName">User Management</x:String>
-        <Style TargetType="Button" x:Key="UserMenuButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="grid" Width="300" Height="300" Background="DarkSlateGray">
-
-                            <TextBlock
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                                    Foreground="White" FontWeight="Bold" FontSize="30" />
-
-                            <ContentPresenter />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Page.Resources>  
     <!--
         This grid acts as a root panel for the page that defines two rows:
@@ -68,6 +44,8 @@
             <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>
+        
+        
         <GridView Grid.Row="1" ItemsSource="{Binding UserList}" Height="350" Name="UserGridView"
                   VerticalAlignment="Top" SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
             <GridView.ItemTemplate>
