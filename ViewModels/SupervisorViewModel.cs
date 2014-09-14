@@ -55,12 +55,12 @@ namespace Manufacturing.WinApp.ViewModels
 
             try
             {
-               // _subscriptionClient = new DatasourceRecordReceiver(App.BearerToken, "http://localhost:3184/signalr", "DatasourceRecord", "notify", "1");
+                _subscriptionClient = new DatasourceRecordReceiver(App.BearerToken, "http://localhost:3184/signalr", "DatasourceRecord", "Notify", "1");
             }
             catch (Exception ex)
             {
                 
-                throw;
+                //throw; Eating my exceptions!
             }
             
 
@@ -140,13 +140,16 @@ namespace Manufacturing.WinApp.ViewModels
 
         async void LoadDataRecords()
         {
-            var records = await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=1");
+            var records = (await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=1")).ToList();
 
             _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                foreach (var record in records)
+                if(records.Any())
                 {
-                    DataRecords.Add(new DataRecord(record));
+                    foreach(var record in records)
+                    {
+                        DataRecords.Add(new DataRecord(record));
+                    }
                 }
             });
         }

@@ -54,7 +54,7 @@ namespace Manufacturing.WinApp.Common.Clients
                     });
                 }
             });
-
+            
             await _hubConnection.Start();
         }
     }
