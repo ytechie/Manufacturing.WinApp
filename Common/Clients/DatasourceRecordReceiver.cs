@@ -17,25 +17,7 @@ namespace Manufacturing.WinApp.Common.Clients
         public DatasourceRecordReceiver(string authenticationToken, string endpointUrl, string hubId, string methodId, string datasourceId)
         {
             _hubConnection = new HubConnection(endpointUrl);
-
-            // Add authentication token
-            _hubConnection.Headers.Add("Bearer", authenticationToken);
-
-            var proxy = _hubConnection.CreateHubProxy(hubId);
-
-            proxy.On<DatasourceRecord>(methodId, (message) =>
-            {
-                var hdl = DataReceived;
-                if (hdl != null)
-                {
-                    hdl(this, new DataReceivedEventArgs<DatasourceRecord>
-                    {
-                        Message = message
-                    });
-                }
-            });
-
-            _hubConnection.Start().Wait();
+            SetupReceiver(authenticationToken, hubId, methodId, datasourceId);
         }
 
         #endregion
@@ -53,5 +35,27 @@ namespace Manufacturing.WinApp.Common.Clients
         }
 
         #endregion
+
+        private async void SetupReceiver(string authenticationToken, string hubId, string methodId, string datasourceId)
+        {
+            // Add authentication token
+            _hubConnection.Headers.Add("Bearer", authenticationToken);
+
+            var proxy = _hubConnection.CreateHubProxy(hubId);
+            
+            proxy.On<DatasourceRecord>(methodId, (message) =>
+            {
+                var hdl = DataReceived;
+                if (hdl != null)
+                {
+                    hdl(this, new DataReceivedEventArgs<DatasourceRecord>
+                    {
+                        Message = message
+                    });
+                }
+            });
+
+            await _hubConnection.Start();
+        }
     }
 }
