@@ -1,51 +1,51 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Windows.UI.Core;
 using AutoMapper;
 using Manufacturing.Framework.Dto;
 using Manufacturing.WinApp.Common;
 using Manufacturing.WinApp.Common.Clients;
 using Manufacturing.WinApp.Views.Supervisor;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Manufacturing.WinApp.ViewModels
 {
     public class DataRecord : DatasourceRecord
     {
-        public string Id { get; set; }
-        public bool IsSelected { get; set; }
-
         public DataRecord(DatasourceRecord datasourceRecord)
         {
             Mapper.CreateMap<DatasourceRecord, DataRecord>();
             Mapper.Map(datasourceRecord, this);
         }
+
+        public string Id { get; set; }
+
+        public bool IsSelected { get; set; }
     }
 
     public class Datasource : DatasourceConfiguration
     {
-        public bool IsSelected { get; set; }
-
         public Datasource(DatasourceConfiguration datasourceConfiguration)
         {
             Mapper.CreateMap<DatasourceConfiguration, Datasource>();
             Mapper.Map(datasourceConfiguration, this);
         }
+
+        public bool IsSelected { get; set; }
     }
 
-    [MenuScreen(typeof(SupervisorPage), "Supervisor Demo")]
-    [RequiredRole("Supervisor")]
+    [MenuScreen(typeof(SupervisorPage), "Supervisor Demo"), RequiredRole("Supervisor")]
     public class SupervisorViewModel : BaseViewModel
     {
         private readonly ApiClient _apiClient;
+
         private readonly DatasourceRecordReceiver _subscriptionClient;
+
+        private RelayCommand _dataRecordSelectedCommand;
 
         private CoreDispatcher _dispatcher;
 
-        public ObservableCollection<DatasourceConfiguration> Datasources { get; set; }
-        public ObservableCollection<DataRecord> DataRecords { get; set; }
-        public ObservableCollection<DataRecord> SelectedDataRecords { get; set; }
+        private string _errorMessage;
 
         public SupervisorViewModel()
         {
@@ -53,19 +53,46 @@ namespace Manufacturing.WinApp.ViewModels
             var apiUrl = string.Format("{0}/api/", ConfigSettings.ApiServiceUrl);
             _apiClient = new ApiClient(apiUrl, App.BearerToken);
 
-            try
-            {
-               // _subscriptionClient = new DatasourceRecordReceiver(App.BearerToken, "http://localhost:3184/signalr", "DatasourceRecord", "notify", "1");
-            }
-            catch (Exception ex)
-            {
-                
-                throw;
-            }
-            
-
             Datasources = new ObservableCollection<DatasourceConfiguration>();
             DataRecords = new ObservableCollection<DataRecord>();
+
+            _subscriptionClient = new DatasourceRecordReceiver(App.BearerToken, "http://localhost:3184/signalr",
+                "DatasourceRecordHub", "notify", "1");
+            _subscriptionClient.DataReceived += (sender, args) => DataRecords.Add(new DataRecord(args.Message));
+        }
+
+        public ObservableCollection<DatasourceConfiguration> Datasources { get; set; }
+
+        public ObservableCollection<DataRecord> DataRecords { get; set; }
+
+        public ObservableCollection<DataRecord> SelectedDataRecords { get; set; }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return _errorMessage;
+            }
+            set
+            {
+                SetProperty(ref _errorMessage, value);
+            }
+        }
+
+        public RelayCommand DataRecordSelectedCommand
+        {
+            get
+            {
+                if (_dataRecordSelectedCommand == null)
+                {
+                    _dataRecordSelectedCommand = new RelayCommand(x => PerformDataRecordSelectedCommand(x));
+                }
+                return _dataRecordSelectedCommand;
+            }
+            set
+            {
+                _dataRecordSelectedCommand = value;
+            }
         }
 
         public void Load()
@@ -79,38 +106,6 @@ namespace Manufacturing.WinApp.ViewModels
 
             SelectedDataRecords = new ObservableCollection<DataRecord>();
             LoadDataRecords();
-
-            // Move this into subscription code, you'll need to track these manually for now
-            //var subscriber = new DatasourceRecordReceiver("GIVE ME AUTH TOKEN!", "ENDPOINT URL; these come from Cloud.json, not sure how that's being injected", "HUB ID", "notify",
-            //    "id you want to look for; still need to set up filtering");
-            // subscribe to event and have it push into data records
-            //subscriber.DataReceived += (sender, args) => DataRecords.Add(args.Message);
-        }
-
-
-        private string _errorMessage;
-        public string ErrorMessage
-        {
-            get { return _errorMessage; }
-            set { this.SetProperty(ref _errorMessage, value); }
-        }
-
-        RelayCommand _dataRecordSelectedCommand;
-        public RelayCommand DataRecordSelectedCommand
-        {
-            get
-            {
-                if (_dataRecordSelectedCommand == null)
-                {
-                    _dataRecordSelectedCommand = new RelayCommand(
-                        x => this.PerformDataRecordSelectedCommand(x));
-                }
-                return _dataRecordSelectedCommand;
-            }
-            set
-            {
-                _dataRecordSelectedCommand = value;
-            }
         }
 
         public virtual void PerformDataRecordSelectedCommand(object state)
@@ -119,9 +114,13 @@ namespace Manufacturing.WinApp.ViewModels
             if (dr != null)
             {
                 if (dr.IsSelected)
+                {
                     SelectedDataRecords.Add(dr);
+                }
                 else if (SelectedDataRecords.Any(x => x.Id == dr.Id))
+                {
                     SelectedDataRecords.Remove(SelectedDataRecords.SingleOrDefault(x => x.Id == dr.Id));
+                }
             }
         }
 
@@ -138,7 +137,7 @@ namespace Manufacturing.WinApp.ViewModels
             });
         }
 
-        async void LoadDataRecords()
+        private async void LoadDataRecords()
         {
             var records = await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=1");
 
