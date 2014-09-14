@@ -59,14 +59,14 @@
 
         <StackPanel Grid.Row="2" Orientation="Vertical">
             <TextBlock Text="Available Subscriptions:" Style="{StaticResource TitleTextStyle}" Margin="5"/>
-            <ListBox Width="300" Margin="0,0,20,0" HorizontalAlignment="Left" ItemsSource="{Binding DataRecords}" SelectionMode="Single"
+            <ListBox Width="300" Margin="0,0,20,0" HorizontalAlignment="Left" ItemsSource="{Binding Datasources}" SelectionMode="Single"
                                          VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                         Padding="0,0,27,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Margin="2,2,5,2" IsChecked="{Binding IsSelected, Mode=TwoWay}" Command="{Binding DataRecordSelectedCommand, Source={StaticResource ViewModel}}" CommandParameter="{Binding}" />
-                            <TextBlock Text="{Binding DatasourceId}"/>
+                            <TextBlock Text="{Binding Name}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -76,9 +76,10 @@
         <GridView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding SelectedDataRecords}" SelectionMode="None">
             <GridView.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="20" BorderThickness="3" BorderBrush="White" Width="400"  Background="Blue">
+                    <Border Margin="20" BorderThickness="3" BorderBrush="White" Width="450"  Background="Blue">
                         <Grid Margin="5">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
                                 <RowDefinition Height="40" />
                                 <RowDefinition Height="40" />
                                 <RowDefinition Height="40" />
@@ -89,12 +90,20 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="Press Number" FontSize="30" FontWeight="Bold" />
-                            <TextBlock Grid.Column="1" Text="{Binding DatasourceId}" Margin="5,0" FontSize="30" />
-                            <TextBlock Grid.Row="1" Text="Operator Name" FontSize="30" FontWeight="Bold" />
-                            <TextBlock Grid.Row="2" Text="Units per Second" FontSize="30" FontWeight="Bold" />
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IntervalSeconds}" Margin="5,0" FontSize="30" />
-                            <TextBlock Grid.Row="3" Text="Production Units" FontSize="30" FontWeight="Bold" />
+                            <TextBlock Grid.Row="0" Text="Data Source Id" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DatasourceId}" Margin="5,0" FontSize="20" />
+
+                            <TextBlock Grid.Row="1" Text="Timestamp" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Timestamp}" FontSize="20" />
+
+                            <TextBlock Grid.Row="2" Text="Interval Seconds" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IntervalSeconds}" Margin="5,0" FontSize="20" />
+                            
+                            <TextBlock Grid.Row="3" Text="Value" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TranslatedValue}" Margin="5,0" FontSize="20" />
+
+                            <TextBlock Grid.Row="4" Text="Data Type" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding DataType}" Margin="5,0" FontSize="20" />
                         </Grid>
                     </Border>
                 </DataTemplate>

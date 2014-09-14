@@ -146,17 +146,30 @@ namespace Manufacturing.WinApp.ViewModels
 
         private async void LoadDataRecord(int dataSourceId)
         {
+<<<<<<< HEAD
+            var records = (await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=1")).ToList();
+=======
             // Add a temporary record - so UI shows something is happening while db call is made
             DatasourceRecord tempRecord = new DatasourceRecord() { DatasourceId = dataSourceId };
             DataRecord tempDataRec = new DataRecord(tempRecord) { TranslatedValue = "Loading Data..." };
             AddUpdateDataRecord(tempDataRec);
+>>>>>>> 96bdcea54cfad0fcd8ef50955ca4068bea06263f
 
             var record = await _apiClient.GetData<DatasourceRecord>("data?datasourceId=" + dataSourceId);
             _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+<<<<<<< HEAD
+                if(records.Any())
+                {
+                    foreach(var record in records)
+                    {
+                        DataRecords.Add(new DataRecord(record));
+                    }
+=======
                 if (record != null)
                 {
                     AddUpdateDataRecord(new DataRecord(record));
+>>>>>>> 96bdcea54cfad0fcd8ef50955ca4068bea06263f
                 }
                 else
                 { 
