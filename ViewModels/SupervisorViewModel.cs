@@ -16,13 +16,22 @@ namespace Manufacturing.WinApp.ViewModels
     {
         public string Id { get; set; }
         public bool IsSelected { get; set; }
+        public object TranslatedValue { get; set; }
 
         public DataRecord(DatasourceRecord datasourceRecord)
         {
             Mapper.CreateMap<DatasourceRecord, DataRecord>();
             Mapper.Map(datasourceRecord, this);
-            // TODO - needs some mapping to readable value based on 
-            // given value and datatype
+
+            // Current data types should only be int, double, string or decimal
+            if (datasourceRecord.DataType == DataTypeEnum.Integer)
+                this.TranslatedValue = datasourceRecord.GetIntValue();
+            else if (datasourceRecord.DataType == DataTypeEnum.Double)
+                this.TranslatedValue = datasourceRecord.GetDoubleValue();
+            else if (datasourceRecord.DataType == DataTypeEnum.String)
+                this.TranslatedValue = datasourceRecord.GetStringValue();
+            else if (datasourceRecord.DataType == DataTypeEnum.Decimal)
+                this.TranslatedValue = datasourceRecord.GetDecimalValue();
         }
     }
 
@@ -114,10 +123,11 @@ namespace Manufacturing.WinApp.ViewModels
             var dr = (Datasource)state;
             if (dr != null)
             {
-                if (dr.IsSelected)
+                DataRecord existingRecord = SelectedDataRecords.FirstOrDefault(x => x.DatasourceId == dr.Id);
+                if (dr.IsSelected && existingRecord == null)
                     LoadDataRecord(dr.Id);
-                else if (SelectedDataRecords.Any(x => x.DatasourceId == dr.Id))
-                    SelectedDataRecords.Remove(SelectedDataRecords.SingleOrDefault(x => x.DatasourceId == dr.Id));
+                else if (existingRecord != null)
+                    SelectedDataRecords.Remove(existingRecord);
             }
         }
 
@@ -136,15 +146,40 @@ namespace Manufacturing.WinApp.ViewModels
 
         private async void LoadDataRecord(int dataSourceId)
         {
-            // TODO : Api call will return 1000 records now 
-            // Replace with SignalR calls - need to display only most recent
-            var records = await _apiClient.GetData<IEnumerable<DatasourceRecord>>("data?datasourceId=" + dataSourceId);
+            // Add a temporary record - so UI shows something is happening while db call is made
+            DatasourceRecord tempRecord = new DatasourceRecord() { DatasourceId = dataSourceId };
+            DataRecord tempDataRec = new DataRecord(tempRecord) { TranslatedValue = "Loading Data..." };
+            AddUpdateDataRecord(tempDataRec);
+
+            var record = await _apiClient.GetData<DatasourceRecord>("data?datasourceId=" + dataSourceId);
             _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                DatasourceRecord rec = records.FirstOrDefault();
-                if (rec != null)
-                    SelectedDataRecords.Add(new DataRecord(rec));
+                if (record != null)
+                {
+                    AddUpdateDataRecord(new DataRecord(record));
+                }
+                else
+                { 
+                    DataRecord emptyDataRec = new DataRecord(tempRecord) { TranslatedValue = "No Records Yet" };
+                    AddUpdateDataRecord(emptyDataRec);
+                }
+
             });
+        }
+
+        private void AddUpdateDataRecord(DataRecord record)
+        {
+            DataRecord existingRecord = SelectedDataRecords.FirstOrDefault(x => x.DatasourceId == record.DatasourceId);
+            // Verify it isn't already in there
+            if (existingRecord == null)
+            {
+                SelectedDataRecords.Add(record);
+            }
+            else
+            {
+                SelectedDataRecords.Remove(existingRecord);
+                SelectedDataRecords.Add(record);
+            }
         }
     }
 }

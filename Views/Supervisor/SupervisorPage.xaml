@@ -101,7 +101,7 @@
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IntervalSeconds}" Margin="5,0" FontSize="20" />
                             
                             <TextBlock Grid.Row="3" Text="Value" FontSize="20" FontWeight="Bold" />
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Value}" Margin="5,0" FontSize="20" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TranslatedValue}" Margin="5,0" FontSize="20" />
 
                             <TextBlock Grid.Row="4" Text="Data Type" FontSize="20" FontWeight="Bold" />
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding DataType}" Margin="5,0" FontSize="20" />
