@@ -24,14 +24,17 @@ namespace Manufacturing.WinApp.ViewModels
             Mapper.Map(datasourceRecord, this);
 
             // Current data types should only be int, double, string or decimal
-            if (datasourceRecord.DataType == DataTypeEnum.Integer)
-                this.TranslatedValue = datasourceRecord.GetIntValue();
-            else if (datasourceRecord.DataType == DataTypeEnum.Double)
-                this.TranslatedValue = datasourceRecord.GetDoubleValue();
-            else if (datasourceRecord.DataType == DataTypeEnum.String)
-                this.TranslatedValue = datasourceRecord.GetStringValue();
-            else if (datasourceRecord.DataType == DataTypeEnum.Decimal)
-                this.TranslatedValue = datasourceRecord.GetDecimalValue();
+
+            // COMMENTING THIS OUT BECAUSE THE SUPPORTING CODE DIDN'T GET CHECKED IN
+            
+            //if (datasourceRecord.DataType == DataTypeEnum.Integer)
+            //    this.TranslatedValue = datasourceRecord.GetIntValue();
+            //else if (datasourceRecord.DataType == DataTypeEnum.Double)
+            //    this.TranslatedValue = datasourceRecord.GetDoubleValue();
+            //else if (datasourceRecord.DataType == DataTypeEnum.String)
+            //    this.TranslatedValue = datasourceRecord.GetStringValue();
+            //else if (datasourceRecord.DataType == DataTypeEnum.Decimal)
+            //    this.TranslatedValue = datasourceRecord.GetDecimalValue();
         }
     }
 
